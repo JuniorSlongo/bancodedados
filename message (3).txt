@@ -1,0 +1,202 @@
+/* Lógico_2: */
+
+CREATE TABLE vendas_pagamento (
+    cod_venda INTEGER,
+    cod_funcionario INTEGER,
+    valor_total FLOAT,
+    cod_pag INTEGER,
+    data_venda DATE,
+    valor FLOAT,
+    nome_pagamento CHAR,
+    PRIMARY KEY (cod_funcionario, cod_pag)
+);
+
+CREATE TABLE produto (
+    cod_prod INTEGER,
+    cod_fab INTEGER,
+    nome_prod CHAR,
+    Atributo_5 INTEGER,
+    valor_compra FLOAT,
+    valor_venda FLOAT,
+    descricao CHAR,
+    quantidade_min INTEGER,
+    PRIMARY KEY (cod_prod, cod_fab, Atributo_5)
+);
+
+CREATE TABLE funcionario (
+    senha CHAR,
+    salario DOUBLE,
+    login CHAR,
+    situacao CHAR,
+    data_nasc DATE,
+    CPF CHAR,
+    telefone CHAR,
+    cargo CHAR,
+    email CHAR,
+    endereco CHAR,
+    nome CHAR,
+    cod_funcionario INTEGER PRIMARY KEY
+);
+
+CREATE TABLE estoque (
+    cod_produto INTEGER,
+    cod_funcionario INTEGER,
+    quantidade INTEGER,
+    PRIMARY KEY (cod_produto, cod_funcionario)
+);
+
+CREATE TABLE fabricante (
+    cod_fab INTEGER,
+    cod_funcionario INTEGER,
+    nome_forn CHAR,
+    PRIMARY KEY (cod_fab, cod_funcionario)
+);
+
+CREATE TABLE fornecedor (
+    cod_funcionario INTEGER,
+    CNPJ CHAR,
+    tempo_entrega CHAR,
+    telefone CHAR,
+    cod_forn INTEGER,
+    site CHAR,
+    endereco CHAR,
+    nome_fantasia CHAR,
+    email CHAR,
+    PRIMARY KEY (cod_funcionario, cod_forn)
+);
+
+CREATE TABLE mantem (
+    fk_funcionario_cod_funcionario INTEGER,
+    fk_vendas_pagamento_cod_funcionario INTEGER,
+    fk_vendas_pagamento_cod_pag INTEGER
+);
+
+CREATE TABLE movimenta (
+    fk_funcionario_cod_funcionario INTEGER,
+    fk_estoque_cod_produto INTEGER,
+    fk_estoque_cod_funcionario INTEGER
+);
+
+CREATE TABLE mantido em (
+    fk_estoque_cod_produto INTEGER,
+    fk_estoque_cod_funcionario INTEGER,
+    fk_produto_cod_prod INTEGER,
+    fk_produto_cod_fab INTEGER,
+    fk_produto_Atributo_5 INTEGER
+);
+
+CREATE TABLE mantem (
+    fk_funcionario_cod_funcionario INTEGER,
+    fk_fabricante_cod_fab INTEGER,
+    fk_fabricante_cod_funcionario INTEGER
+);
+
+CREATE TABLE fabrica (
+    fk_produto_cod_prod INTEGER,
+    fk_produto_cod_fab INTEGER,
+    fk_produto_Atributo_5 INTEGER,
+    fk_fabricante_cod_fab INTEGER,
+    fk_fabricante_cod_funcionario INTEGER
+);
+
+CREATE TABLE mantem (
+    fk_funcionario_cod_funcionario INTEGER,
+    fk_fornecedor_cod_funcionario INTEGER,
+    fk_fornecedor_cod_forn INTEGER
+);
+
+CREATE TABLE fornece (
+    fk_fornecedor_cod_funcionario INTEGER,
+    fk_fornecedor_cod_forn INTEGER,
+    fk_produto_cod_prod INTEGER,
+    fk_produto_cod_fab INTEGER,
+    fk_produto_Atributo_5 INTEGER
+);
+
+CREATE TABLE contem (
+    fk_produto_cod_prod INTEGER,
+    fk_produto_cod_fab INTEGER,
+    fk_produto_Atributo_5 INTEGER,
+    fk_vendas_pagamento_cod_funcionario INTEGER,
+    fk_vendas_pagamento_cod_pag INTEGER
+);
+ 
+ALTER TABLE mantem ADD CONSTRAINT FK_mantem_1
+    FOREIGN KEY (fk_funcionario_cod_funcionario)
+    REFERENCES funcionario (cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE mantem ADD CONSTRAINT FK_mantem_2
+    FOREIGN KEY (fk_vendas_pagamento_cod_funcionario, fk_vendas_pagamento_cod_pag)
+    REFERENCES vendas_pagamento (cod_funcionario, cod_pag)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE movimenta ADD CONSTRAINT FK_movimenta_1
+    FOREIGN KEY (fk_funcionario_cod_funcionario)
+    REFERENCES funcionario (cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE movimenta ADD CONSTRAINT FK_movimenta_2
+    FOREIGN KEY (fk_estoque_cod_produto, fk_estoque_cod_funcionario)
+    REFERENCES estoque (cod_produto, cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE mantido em ADD CONSTRAINT FK_mantido em_1
+    FOREIGN KEY (fk_estoque_cod_produto, fk_estoque_cod_funcionario)
+    REFERENCES estoque (cod_produto, cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE mantido em ADD CONSTRAINT FK_mantido em_2
+    FOREIGN KEY (fk_produto_cod_prod, fk_produto_cod_fab, fk_produto_Atributo_5)
+    REFERENCES produto (cod_prod, cod_fab, Atributo_5)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE mantem ADD CONSTRAINT FK_mantem_1
+    FOREIGN KEY (fk_funcionario_cod_funcionario)
+    REFERENCES funcionario (cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE mantem ADD CONSTRAINT FK_mantem_2
+    FOREIGN KEY (fk_fabricante_cod_fab, fk_fabricante_cod_funcionario)
+    REFERENCES fabricante (cod_fab, cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE fabrica ADD CONSTRAINT FK_fabrica_1
+    FOREIGN KEY (fk_produto_cod_prod, fk_produto_cod_fab, fk_produto_Atributo_5)
+    REFERENCES produto (cod_prod, cod_fab, Atributo_5)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE fabrica ADD CONSTRAINT FK_fabrica_2
+    FOREIGN KEY (fk_fabricante_cod_fab, fk_fabricante_cod_funcionario)
+    REFERENCES fabricante (cod_fab, cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE mantem ADD CONSTRAINT FK_mantem_1
+    FOREIGN KEY (fk_funcionario_cod_funcionario)
+    REFERENCES funcionario (cod_funcionario)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE mantem ADD CONSTRAINT FK_mantem_2
+    FOREIGN KEY (fk_fornecedor_cod_funcionario, fk_fornecedor_cod_forn)
+    REFERENCES fornecedor (cod_funcionario, cod_forn)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE fornece ADD CONSTRAINT FK_fornece_1
+    FOREIGN KEY (fk_fornecedor_cod_funcionario, fk_fornecedor_cod_forn)
+    REFERENCES fornecedor (cod_funcionario, cod_forn)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE fornece ADD CONSTRAINT FK_fornece_2
+    FOREIGN KEY (fk_produto_cod_prod, fk_produto_cod_fab, fk_produto_Atributo_5)
+    REFERENCES produto (cod_prod, cod_fab, Atributo_5)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE contem ADD CONSTRAINT FK_contem_1
+    FOREIGN KEY (fk_produto_cod_prod, fk_produto_cod_fab, fk_produto_Atributo_5)
+    REFERENCES produto (cod_prod, cod_fab, Atributo_5)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE contem ADD CONSTRAINT FK_contem_2
+    FOREIGN KEY (fk_vendas_pagamento_cod_funcionario, fk_vendas_pagamento_cod_pag)
+    REFERENCES vendas_pagamento (cod_funcionario, cod_pag)
+    ON DELETE SET NULL;
